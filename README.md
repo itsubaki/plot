@@ -4,9 +4,10 @@
 
 
 ```shell
-$ go install github.com/itsubaki/plot
+$ go install github.com/itsubaki/plot@latest
 ```
 
 ```shell
+# generate cos.png
 $ plot testdata/cos.csv
 ```
