@@ -8,6 +8,6 @@ $ go install github.com/itsubaki/plot@latest
 ```
 
 ```shell
-# generate cos.png
+# generate testdata/cos.csv.png
 $ plot testdata/cos.csv
 ```
