@@ -2,12 +2,14 @@
 
  * A Command Line Tool for plot
 
+## Installation
 
 ```shell
-$ go install github.com/itsubaki/plot@latest
+go install github.com/itsubaki/plot@latest
 ```
 
+## Example
+
 ```shell
-# generate testdata/cos.csv.png
-$ plot testdata/cos.csv
+plot testdata/cos.csv
 ```
