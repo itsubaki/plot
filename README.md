@@ -1,7 +1,5 @@
 # plot
 
- * A Command Line Tool for plot
-
 ## Installation
 
 ```shell
