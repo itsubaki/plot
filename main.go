@@ -16,12 +16,12 @@ import (
 )
 
 func main() {
-	var shpere bool
-	flag.BoolVar(&shpere, "shpere", false, "draw points only and clamp x-axis to 0..2pi")
+	var sphere bool
+	flag.BoolVar(&sphere, "sphere", false, "draw points only and clamp x-axis to 0..2pi")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		panic("usage: plot [--shpere] <csv-file>")
+		panic("usage: plot [--sphere] <csv-file>")
 	}
 
 	filename := flag.Arg(0)
@@ -38,8 +38,8 @@ func main() {
 	}
 
 	switch {
-	case shpere:
-		if err := SaveAsShpere(x, y, filename+".png"); err != nil {
+	case sphere:
+		if err := SaveAsSphere(x, y, filename+".png"); err != nil {
 			panic(err)
 		}
 	default:
@@ -72,7 +72,7 @@ func Save(x, y []float64, filename string) error {
 	return nil
 }
 
-func SaveAsShpere(x, y []float64, filename string) error {
+func SaveAsSphere(x, y []float64, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
