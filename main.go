@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"image/color"
 	"math"
 	"os"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
+	"gonum.org/v1/plot/vg/draw"
 )
 
 func main() {
@@ -86,6 +88,10 @@ func SaveAsShpere(x, y []float64, filename string) error {
 	if err != nil {
 		return fmt.Errorf("new scatter: %v", err)
 	}
+
+	scatter.GlyphStyle.Color = color.Black
+	scatter.GlyphStyle.Radius = vg.Points(1.5)
+	scatter.GlyphStyle.Shape = draw.CircleGlyph{}
 
 	p.X.Min = 0
 	p.X.Max = 2 * math.Pi
