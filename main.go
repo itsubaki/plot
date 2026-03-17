@@ -31,7 +31,7 @@ func main() {
 	reader := csv.NewReader(file)
 	records := Must(reader.ReadAll())
 
-	x, y := make([]float64, 0), make([]float64, 0)
+	x, y := make([]float64, 0, len(records)), make([]float64, 0, len(records))
 	for _, r := range records {
 		x = append(x, Must(strconv.ParseFloat(r[0], 64)))
 		y = append(y, Must(strconv.ParseFloat(r[1], 64)))
@@ -42,8 +42,6 @@ func main() {
 		if err := SaveAsShpere(x, y, filename+".png"); err != nil {
 			panic(err)
 		}
-
-		return
 	default:
 		if err := Save(x, y, filename+".png"); err != nil {
 			panic(err)
@@ -52,7 +50,7 @@ func main() {
 }
 
 func Save(x, y []float64, filename string) error {
-	xys := make(plotter.XYs, 0)
+	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
 			X: x[i],
@@ -75,7 +73,7 @@ func Save(x, y []float64, filename string) error {
 }
 
 func SaveAsShpere(x, y []float64, filename string) error {
-	xys := make(plotter.XYs, 0)
+	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
 			X: y[i],
