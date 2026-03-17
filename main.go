@@ -87,8 +87,8 @@ func SaveAsSphere(x, y []float64, filename string) error {
 		return fmt.Errorf("new scatter: %v", err)
 	}
 
-	scatter.GlyphStyle.Color = color.Black
-	scatter.GlyphStyle.Radius = vg.Points(1.5)
+	scatter.GlyphStyle.Color = color.RGBA{R: 30, G: 144, B: 255, A: 90}
+	scatter.GlyphStyle.Radius = vg.Points(0.8)
 	scatter.GlyphStyle.Shape = draw.CircleGlyph{}
 
 	p.X.Min = 0
