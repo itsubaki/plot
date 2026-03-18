@@ -16,8 +16,9 @@ import (
 )
 
 func main() {
-	var sphere bool
-	flag.BoolVar(&sphere, "sphere", false, "draw points only and clamp x-axis to 0..2pi")
+	var sphere, swap bool
+	flag.BoolVar(&sphere, "sphere", false, "draw points only")
+	flag.BoolVar(&swap, "swap", false, "swap the X and Y axes")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
@@ -35,6 +36,10 @@ func main() {
 	for _, r := range records {
 		x = append(x, Must(strconv.ParseFloat(r[0], 64)))
 		y = append(y, Must(strconv.ParseFloat(r[1], 64)))
+	}
+
+	if swap {
+		x, y = y, x
 	}
 
 	switch {
@@ -94,12 +99,12 @@ func SaveAsSphere(x, y []float64, filename string) error {
 	p.X.Min = 0
 	p.X.Max = 2 * math.Pi
 	p.Y.Min = 0
-	p.Y.Max = 2 * math.Pi
+	p.Y.Max = math.Pi
 	p.X.Tick.Marker = plot.ConstantTicks(Ticks2Pi())
 	p.Y.Tick.Marker = plot.ConstantTicks(Ticks2Pi())
 	p.Add(scatter)
 
-	if err := p.Save(8*vg.Inch, 8*vg.Inch, filename); err != nil {
+	if err := p.Save(8*vg.Inch, 4*vg.Inch, filename); err != nil {
 		return fmt.Errorf("save: %v", err)
 	}
 
