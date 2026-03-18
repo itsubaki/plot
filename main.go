@@ -76,8 +76,8 @@ func SaveAsSphere(x, y []float64, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
-			X: y[i],
-			Y: x[i],
+			X: x[i],
+			Y: y[i],
 		})
 	}
 
@@ -94,26 +94,16 @@ func SaveAsSphere(x, y []float64, filename string) error {
 	p.X.Min = 0
 	p.X.Max = 2 * math.Pi
 	p.Y.Min = 0
-	p.Y.Max = math.Pi
+	p.Y.Max = 2 * math.Pi
 	p.X.Tick.Marker = plot.ConstantTicks(Ticks2Pi())
-	p.Y.Tick.Marker = plot.ConstantTicks(TicksPi())
+	p.Y.Tick.Marker = plot.ConstantTicks(Ticks2Pi())
 	p.Add(scatter)
 
-	if err := p.Save(8*vg.Inch, 4*vg.Inch, filename); err != nil {
+	if err := p.Save(8*vg.Inch, 8*vg.Inch, filename); err != nil {
 		return fmt.Errorf("save: %v", err)
 	}
 
 	return nil
-}
-
-func TicksPi() []plot.Tick {
-	return []plot.Tick{
-		{Value: 0, Label: "0"},
-		{Value: math.Pi / 4, Label: "pi/4"},
-		{Value: math.Pi / 2, Label: "2pi/4"},
-		{Value: 3 * math.Pi / 4, Label: "3pi/4"},
-		{Value: math.Pi, Label: "pi"},
-	}
 }
 
 func Ticks2Pi() []plot.Tick {
