@@ -4,4 +4,4 @@ cos:
 	go run main.go testdata/cos.csv
 
 bloch:
-	go run main.go --sphere --swap testdata/bloch.csv
+	go run main.go --scatter --swap testdata/bloch.csv

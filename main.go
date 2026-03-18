@@ -16,13 +16,13 @@ import (
 )
 
 func main() {
-	var sphere, swap bool
-	flag.BoolVar(&sphere, "sphere", false, "draw points only")
+	var scatter, swap bool
+	flag.BoolVar(&scatter, "scatter", false, "draw points only")
 	flag.BoolVar(&swap, "swap", false, "swap the X and Y axes")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		panic("usage: plot [--sphere] <csv-file>")
+		panic("usage: plot [--scatter] <csv-file>")
 	}
 
 	filename := flag.Arg(0)
@@ -43,8 +43,8 @@ func main() {
 	}
 
 	switch {
-	case sphere:
-		if err := SaveAsSphere(x, y, filename+".png"); err != nil {
+	case scatter:
+		if err := SaveAsScatter(x, y, filename+".png"); err != nil {
 			panic(err)
 		}
 	default:
@@ -77,7 +77,7 @@ func Save(x, y []float64, filename string) error {
 	return nil
 }
 
-func SaveAsSphere(x, y []float64, filename string) error {
+func SaveAsScatter(x, y []float64, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
@@ -92,9 +92,9 @@ func SaveAsSphere(x, y []float64, filename string) error {
 		return fmt.Errorf("new scatter: %v", err)
 	}
 
-	scatter.GlyphStyle.Color = color.RGBA{R: 30, G: 144, B: 255, A: 90}
-	scatter.GlyphStyle.Radius = vg.Points(0.8)
 	scatter.GlyphStyle.Shape = draw.CircleGlyph{}
+	scatter.GlyphStyle.Color = color.RGBA{R: 30, G: 144, B: 255, A: 180}
+	scatter.GlyphStyle.Radius = vg.Points(2)
 
 	p.X.Min = 0
 	p.X.Max = 2 * math.Pi
@@ -114,14 +114,14 @@ func SaveAsSphere(x, y []float64, filename string) error {
 func Ticks2Pi() []plot.Tick {
 	return []plot.Tick{
 		{Value: 0, Label: "0"},
-		{Value: math.Pi / 4, Label: "pi/4"},
-		{Value: math.Pi / 2, Label: "2pi/4"},
+		{Value: 1 * math.Pi / 4, Label: "pi/4"},
+		{Value: 2 * math.Pi / 4, Label: "2pi/4"},
 		{Value: 3 * math.Pi / 4, Label: "3pi/4"},
-		{Value: math.Pi, Label: "pi"},
+		{Value: 4 * math.Pi / 4, Label: "pi"},
 		{Value: 5 * math.Pi / 4, Label: "5pi/4"},
-		{Value: 3 * math.Pi / 2, Label: "6pi/4"},
+		{Value: 6 * math.Pi / 4, Label: "6pi/4"},
 		{Value: 7 * math.Pi / 4, Label: "7pi/4"},
-		{Value: 2 * math.Pi, Label: "2pi"},
+		{Value: 8 * math.Pi / 4, Label: "2pi"},
 	}
 }
 
