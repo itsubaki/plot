@@ -16,9 +16,9 @@ import (
 )
 
 func main() {
-	var scatter, swap bool
+	var scatter, swapxy bool
 	flag.BoolVar(&scatter, "scatter", false, "draw points only")
-	flag.BoolVar(&swap, "swap", false, "swap the X and Y axes")
+	flag.BoolVar(&swapxy, "swap-xy", false, "swap the X and Y axes")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
@@ -38,7 +38,7 @@ func main() {
 		y = append(y, Must(strconv.ParseFloat(r[1], 64)))
 	}
 
-	if swap {
+	if swapxy {
 		x, y = y, x
 	}
 
