@@ -75,6 +75,8 @@ func Save(x, y []float64, w, h int, filename string) error {
 	if err != nil {
 		return fmt.Errorf("new line: %v", err)
 	}
+
+	line.Color = color.RGBA{R: 30, G: 144, B: 255, A: 255}
 	p.Add(line)
 
 	wInch := font.Length(w) * vg.Inch
