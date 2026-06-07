@@ -76,7 +76,7 @@ func Save(x, y []float64, w, h int, filename string) error {
 		return fmt.Errorf("new line: %v", err)
 	}
 
-	line.Color = color.RGBA{R: 30, G: 144, B: 255, A: 255}
+	line.Color = color.RGBA{R: 0, G: 120, B: 255, A: 255}
 	p.Add(line)
 
 	wInch := font.Length(w) * vg.Inch
@@ -104,7 +104,7 @@ func SaveAsScatter(x, y []float64, w, h int, filename string) error {
 	}
 
 	scatter.GlyphStyle.Shape = draw.CircleGlyph{}
-	scatter.GlyphStyle.Color = color.RGBA{R: 30, G: 144, B: 255, A: 180}
+	scatter.GlyphStyle.Color = color.RGBA{R: 0, G: 120, B: 255, A: 255}
 	scatter.GlyphStyle.Radius = vg.Points(2)
 
 	p.X.Min = 0
