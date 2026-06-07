@@ -7,9 +7,12 @@ import (
 	"image/color"
 	"math"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/font"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
 	"gonum.org/v1/plot/vg/draw"
@@ -17,16 +20,19 @@ import (
 
 func main() {
 	var scatter, swapxy bool
+	var w, h int
 	flag.BoolVar(&scatter, "scatter", false, "draw points only")
 	flag.BoolVar(&swapxy, "swap-xy", false, "swap the X and Y axes")
+	flag.IntVar(&w, "width", 8, "")
+	flag.IntVar(&h, "height", 4, "")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
 		panic("usage: plot [--scatter] <csv-file>")
 	}
 
-	filename := flag.Arg(0)
-	file := Must(os.Open(filename))
+	path := flag.Arg(0)
+	file := Must(os.Open(path))
 	defer file.Close()
 
 	reader := csv.NewReader(file)
@@ -42,19 +48,20 @@ func main() {
 		x, y = y, x
 	}
 
+	out := strings.TrimSuffix(path, filepath.Ext(path)) + ".png"
 	switch {
 	case scatter:
-		if err := SaveAsScatter(x, y, filename+".png"); err != nil {
+		if err := SaveAsScatter(x, y, w, h, out); err != nil {
 			panic(err)
 		}
 	default:
-		if err := Save(x, y, filename+".png"); err != nil {
+		if err := Save(x, y, w, h, out); err != nil {
 			panic(err)
 		}
 	}
 }
 
-func Save(x, y []float64, filename string) error {
+func Save(x, y []float64, w, h int, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
@@ -70,14 +77,16 @@ func Save(x, y []float64, filename string) error {
 	}
 	p.Add(line)
 
-	if err := p.Save(8*vg.Inch, 4*vg.Inch, filename); err != nil {
+	wInch := font.Length(w) * vg.Inch
+	hInch := font.Length(h) * vg.Inch
+	if err := p.Save(wInch, hInch, filename); err != nil {
 		return fmt.Errorf("save: %v", err)
 	}
 
 	return nil
 }
 
-func SaveAsScatter(x, y []float64, filename string) error {
+func SaveAsScatter(x, y []float64, w, h int, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
@@ -104,7 +113,9 @@ func SaveAsScatter(x, y []float64, filename string) error {
 	p.Y.Tick.Marker = plot.ConstantTicks(Ticks2Pi())
 	p.Add(scatter)
 
-	if err := p.Save(8*vg.Inch, 4*vg.Inch, filename); err != nil {
+	wInch := font.Length(w) * vg.Inch
+	hInch := font.Length(h) * vg.Inch
+	if err := p.Save(wInch, hInch, filename); err != nil {
 		return fmt.Errorf("save: %v", err)
 	}
 
