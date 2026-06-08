@@ -78,6 +78,7 @@ func Save(x, y []float64, w, h int, filename string) error {
 
 	line.Color = color.RGBA{R: 0, G: 120, B: 255, A: 255}
 	p.Add(line)
+	p.Add(plotter.NewGrid())
 
 	wInch := font.Length(w) * vg.Inch
 	hInch := font.Length(h) * vg.Inch
@@ -114,6 +115,7 @@ func SaveAsScatter(x, y []float64, w, h int, filename string) error {
 	p.X.Tick.Marker = plot.ConstantTicks(Ticks2Pi())
 	p.Y.Tick.Marker = plot.ConstantTicks(Ticks2Pi())
 	p.Add(scatter)
+	p.Add(plotter.NewGrid())
 
 	wInch := font.Length(w) * vg.Inch
 	hInch := font.Length(h) * vg.Inch
