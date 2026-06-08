@@ -21,10 +21,12 @@ import (
 func main() {
 	var scatter, swapxy bool
 	var w, h int
+	var yMin string
 	flag.BoolVar(&scatter, "scatter", false, "draw points only")
 	flag.BoolVar(&swapxy, "swap-xy", false, "swap the X and Y axes")
 	flag.IntVar(&w, "width", 8, "")
 	flag.IntVar(&h, "height", 4, "")
+	flag.StringVar(&yMin, "y-min", "", "")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
@@ -55,13 +57,13 @@ func main() {
 			panic(err)
 		}
 	default:
-		if err := Save(x, y, w, h, out); err != nil {
+		if err := Save(x, y, w, h, yMin, out); err != nil {
 			panic(err)
 		}
 	}
 }
 
-func Save(x, y []float64, w, h int, filename string) error {
+func Save(x, y []float64, w, h int, yMin, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
@@ -79,6 +81,15 @@ func Save(x, y []float64, w, h int, filename string) error {
 	line.Color = color.RGBA{R: 0, G: 120, B: 255, A: 255}
 	p.Add(line)
 	p.Add(plotter.NewGrid())
+
+	if len(yMin) > 0 {
+		ymin, err := strconv.Atoi(yMin)
+		if err != nil {
+			return err
+		}
+
+		p.Y.Min = float64(ymin)
+	}
 
 	wInch := font.Length(w) * vg.Inch
 	hInch := font.Length(h) * vg.Inch
