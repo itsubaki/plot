@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	"gonum.org/v1/plot"
-	"gonum.org/v1/plot/font"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
 	"gonum.org/v1/plot/vg/draw"
@@ -20,13 +19,11 @@ import (
 
 func main() {
 	var scatter, swapxy bool
-	var w, h int
-	var yMin string
+	var yMin, yMax string
 	flag.BoolVar(&scatter, "scatter", false, "draw points only")
 	flag.BoolVar(&swapxy, "swap-xy", false, "swap the X and Y axes")
-	flag.IntVar(&w, "width", 8, "")
-	flag.IntVar(&h, "height", 4, "")
 	flag.StringVar(&yMin, "y-min", "", "")
+	flag.StringVar(&yMax, "y-max", "", "")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
@@ -53,17 +50,17 @@ func main() {
 	out := strings.TrimSuffix(path, filepath.Ext(path)) + ".png"
 	switch {
 	case scatter:
-		if err := SaveAsScatter(x, y, w, h, out); err != nil {
+		if err := SaveAsScatter(x, y, out); err != nil {
 			panic(err)
 		}
 	default:
-		if err := Save(x, y, w, h, yMin, out); err != nil {
+		if err := Save(x, y, yMin, yMax, out); err != nil {
 			panic(err)
 		}
 	}
 }
 
-func Save(x, y []float64, w, h int, yMin, filename string) error {
+func Save(x, y []float64, yMin, yMax, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
@@ -91,16 +88,14 @@ func Save(x, y []float64, w, h int, yMin, filename string) error {
 		p.Y.Min = float64(ymin)
 	}
 
-	wInch := font.Length(w) * vg.Inch
-	hInch := font.Length(h) * vg.Inch
-	if err := p.Save(wInch, hInch, filename); err != nil {
+	if err := p.Save(8*vg.Inch, 4*vg.Inch, filename); err != nil {
 		return fmt.Errorf("save: %v", err)
 	}
 
 	return nil
 }
 
-func SaveAsScatter(x, y []float64, w, h int, filename string) error {
+func SaveAsScatter(x, y []float64, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
@@ -128,9 +123,7 @@ func SaveAsScatter(x, y []float64, w, h int, filename string) error {
 	p.Add(scatter)
 	p.Add(plotter.NewGrid())
 
-	wInch := font.Length(w) * vg.Inch
-	hInch := font.Length(h) * vg.Inch
-	if err := p.Save(wInch, hInch, filename); err != nil {
+	if err := p.Save(8*vg.Inch, 4*vg.Inch, filename); err != nil {
 		return fmt.Errorf("save: %v", err)
 	}
 
