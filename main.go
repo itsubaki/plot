@@ -19,9 +19,11 @@ import (
 
 func main() {
 	var scatter, swapxy bool
-	var yMin, yMax string
+	var xMin, xMax, yMin, yMax string
 	flag.BoolVar(&scatter, "scatter", false, "draw points only")
 	flag.BoolVar(&swapxy, "swap-xy", false, "swap the X and Y axes")
+	flag.StringVar(&xMin, "x-min", "", "")
+	flag.StringVar(&xMax, "x-max", "", "")
 	flag.StringVar(&yMin, "y-min", "", "")
 	flag.StringVar(&yMax, "y-max", "", "")
 	flag.Parse()
@@ -54,13 +56,13 @@ func main() {
 			panic(err)
 		}
 	default:
-		if err := Save(x, y, yMin, yMax, out); err != nil {
+		if err := Save(x, y, xMin, xMax, yMin, yMax, out); err != nil {
 			panic(err)
 		}
 	}
 }
 
-func Save(x, y []float64, yMin, yMax, filename string) error {
+func Save(x, y []float64, xMin, xMax, yMin, yMax, filename string) error {
 	xys := make(plotter.XYs, 0, len(x))
 	for i := range x {
 		xys = append(xys, plotter.XY{
@@ -79,22 +81,20 @@ func Save(x, y []float64, yMin, yMax, filename string) error {
 	p.Add(line)
 	p.Add(plotter.NewGrid())
 
-	if len(yMin) > 0 {
-		ymin, err := strconv.Atoi(yMin)
-		if err != nil {
-			return err
-		}
-
-		p.Y.Min = float64(ymin)
+	if err := set(xMin, &p.X.Min); err != nil {
+		return err
 	}
 
-	if len(yMax) > 0 {
-		ymax, err := strconv.Atoi(yMax)
-		if err != nil {
-			return err
-		}
+	if err := set(xMax, &p.X.Max); err != nil {
+		return err
+	}
 
-		p.Y.Max = float64(ymax)
+	if err := set(yMin, &p.Y.Min); err != nil {
+		return err
+	}
+
+	if err := set(yMax, &p.Y.Max); err != nil {
+		return err
 	}
 
 	if err := p.Save(8*vg.Inch, 4*vg.Inch, filename); err != nil {
@@ -159,4 +159,18 @@ func Must[T any](a T, err error) T {
 	}
 
 	return a
+}
+
+func set(s string, dst *float64) error {
+	if s == "" {
+		return nil
+	}
+
+	v, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return err
+	}
+
+	*dst = v
+	return nil
 }
