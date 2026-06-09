@@ -88,6 +88,15 @@ func Save(x, y []float64, yMin, yMax, filename string) error {
 		p.Y.Min = float64(ymin)
 	}
 
+	if len(yMax) > 0 {
+		ymax, err := strconv.Atoi(yMax)
+		if err != nil {
+			return err
+		}
+
+		p.Y.Max = float64(ymax)
+	}
+
 	if err := p.Save(8*vg.Inch, 4*vg.Inch, filename); err != nil {
 		return fmt.Errorf("save: %v", err)
 	}
