@@ -24,7 +24,7 @@ func main() {
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		panic("usage: plot [--scatter] <csv-file>")
+		panic("usage: plot <csv-file>")
 	}
 
 	path := flag.Arg(0)
